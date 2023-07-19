@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\StoreCommentRequest;
-use App\Http\Requests\UpdateCommentRequest;
-use App\Models\Comment;
+use App\Http\Controllers\Controller;
+use App\Models\Post;
+use Illuminate\Http\Request;
 
-class CommentController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCommentRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -27,7 +27,7 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(Post $post)
     {
         //
     }
@@ -35,7 +35,7 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCommentRequest $request, Comment $comment)
+    public function update(Request $request, Post $post)
     {
         //
     }
@@ -43,7 +43,7 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(Post $post)
     {
         //
     }
