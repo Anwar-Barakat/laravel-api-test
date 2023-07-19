@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Comment;
+use App\Models\Post;
 use Database\Seeders\Traits\DisableForiegnKeys;
 use Database\Seeders\Traits\TruncateTable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -18,7 +19,11 @@ class CommentSeeder extends Seeder
     {
         $this->disableForiegnKeys();
         $this->truncate('comments');
-        Comment::factory(100)->create();
+
+        Comment::factory(100)
+            // ->for(Post::factory(3), 'post')
+            ->create();
+
         $this->enableForiegnKeys();
     }
 }
