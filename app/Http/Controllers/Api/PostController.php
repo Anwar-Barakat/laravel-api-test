@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -13,7 +14,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::query()->get();
+
+        return new JsonResponse([
+            'data' => $posts
+        ]);
     }
 
     /**
@@ -21,7 +26,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $created = Post::query()->create([
+            'title' => $request->title,
+            'body'  => $request->body
+        ]);
+
+        return new JsonResponse([
+            'data' => $created
+        ]);
     }
 
     /**
@@ -29,7 +41,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return new JsonResponse([
+            'data'  => $post
+        ]);
     }
 
     /**
@@ -37,7 +51,22 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        // $post->update($request->only(['title', 'body']));
+
+        $updated = $post->update([
+            'title' => $request->title ?? $post->title,
+            'body'  => $request->body ?? $post->body,
+        ]);
+
+        if (!$updated) {
+            return new JsonResponse([
+                'errors' => 'Failed to update the post'
+            ], 400);
+        }
+
+        return new JsonResponse([
+            'data' => $post
+        ]);
     }
 
     /**
@@ -45,6 +74,16 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $deleted = $post->forceDelete();
+
+        if (!$deleted) {
+            return new JsonResponse([
+                'errors' => 'Could not delete resource'
+            ], 400);
+        }
+
+        return new JsonResponse([
+            'data' => 'Post deleted successfully'
+        ]);
     }
 }
