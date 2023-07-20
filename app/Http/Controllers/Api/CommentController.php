@@ -52,10 +52,9 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        // $comment->update($request->only(['title', 'body']));
+        // $comment->update($request->only(['body','post_id','user_id']));
 
         $updated = $comment->update([
-            'body'      => $request->body,
             'body'      => $request->body ?? $comment->body,
             'post_id'   => $request->post_id ?? $comment->post_id,
             'user_id'   => $request->user_id ?? $comment->user_id,
@@ -63,7 +62,7 @@ class CommentController extends Controller
 
         if (!$updated) {
             return new JsonResponse([
-                'errors' => 'Failed to update the comment'
+                'errors' => ['Failed to update the comment']
             ], 400);
         }
 
@@ -81,7 +80,7 @@ class CommentController extends Controller
 
         if (!$deleted) {
             return new JsonResponse([
-                'errors' => 'Could not delete resource'
+                'errors' => ['Could not delete resource']
             ], 400);
         }
 

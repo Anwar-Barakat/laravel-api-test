@@ -53,7 +53,19 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        // $user->update($request->only(['name']));
+
+        $updated = $user->update(['name' => $request->name,]);
+
+        if (!$updated) {
+            return new JsonResponse([
+                'errors' => ['Failed to update the user']
+            ], 400);
+        }
+
+        return new JsonResponse([
+            'data' => $user
+        ]);
     }
 
     /**
@@ -61,6 +73,16 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $deleted = $user->forceDelete();
+
+        if (!$deleted) {
+            return new JsonResponse([
+                'errors' => ['Could not delete resource']
+            ], 400);
+        }
+
+        return new JsonResponse([
+            'data' => 'User deleted successfully'
+        ]);
     }
 }

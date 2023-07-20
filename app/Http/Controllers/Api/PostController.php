@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -26,10 +27,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $created = Post::query()->create([
-            'title' => $request->title,
-            'body'  => $request->body
-        ]);
+        $created = DB::transaction(function () use ($request) {
+            $created = Post::query()->create([
+                'title' => $request->title,
+                'body'  => $request->body
+            ]);
+
+            $created->users()->sync($request->user_ids);
+            return $created;
+        });
 
         return new JsonResponse([
             'data' => $created
@@ -60,7 +66,7 @@ class PostController extends Controller
 
         if (!$updated) {
             return new JsonResponse([
-                'errors' => 'Failed to update the post'
+                'errors' => ['Failed to update the post']
             ], 400);
         }
 
@@ -78,7 +84,7 @@ class PostController extends Controller
 
         if (!$deleted) {
             return new JsonResponse([
-                'errors' => 'Could not delete resource'
+                'errors' => ['Could not delete resource']
             ], 400);
         }
 
