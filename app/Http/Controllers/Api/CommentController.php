@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,23 +14,19 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $comments = Comment::query()->get();
+        $pageSize   = $request->page_size ?? 20;
+        $comments   = Comment::query()->paginate($pageSize);
         return CommentResource::collection($comments);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CommentRepository $repository)
     {
-        $created = Comment::query()->create([
-            'body'      => $request->body,
-            'post_id'   => $request->post_id,
-            'user_id'   => $request->user_id,
-        ]);
-
+        $created = $repository->create($request->only(['body', 'user_id', 'post_id']));
         return new CommentResource($created);
     }
 
@@ -44,38 +41,18 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, Comment $comment, CommentRepository $repository)
     {
-        // $comment->update($request->only(['body','post_id','user_id']));
-
-        $updated = $comment->update([
-            'body'      => $request->body ?? $comment->body,
-            'post_id'   => $request->post_id ?? $comment->post_id,
-            'user_id'   => $request->user_id ?? $comment->user_id,
-        ]);
-
-        if (!$updated) {
-            return new JsonResponse([
-                'errors' => ['Failed to update the comment']
-            ], 400);
-        }
-
+        $comment = $repository->update($comment, $request->only(['body', 'user_id', 'post_id']));
         return new CommentResource($comment);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment, CommentRepository $repository)
     {
-        $deleted = $comment->forceDelete();
-
-        if (!$deleted) {
-            return new JsonResponse([
-                'errors' => ['Could not delete resource']
-            ], 400);
-        }
-
+        $repository->delete($comment);
         return new JsonResponse([
             'data' => 'Comment deleted successfully'
         ]);

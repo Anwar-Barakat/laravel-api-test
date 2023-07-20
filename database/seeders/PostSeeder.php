@@ -22,9 +22,10 @@ class PostSeeder extends Seeder
         $this->disableForiegnKeys();
         $this->truncate('posts');
 
-        $posts = Post::factory(10)
+        $posts = Post::factory(200)
+            // ->untitled()
             ->has(Comment::factory(3), 'comments')
-            ->untitled()->create();
+            ->create();
         $posts->each(function (Post $post) {
             $post->users()->sync([User::inRandomOrder()->first()->id]);
         });
