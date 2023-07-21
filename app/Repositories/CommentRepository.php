@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\Comment;
 
 class CommentRepository extends BaseRepository
@@ -13,7 +14,7 @@ class CommentRepository extends BaseRepository
             'user_id'   => data_get($attributes, 'user_id'),
             'post_id'   => data_get($attributes, 'post_id'),
         ]);
-
+        throw_if(!$created, GeneralJsonException::class, 'Failed to create');
         return $created;
     }
 
@@ -25,18 +26,14 @@ class CommentRepository extends BaseRepository
             'post_id'   => data_get($attributes, 'post_id', $comment->post_id),
         ]);
 
-        if (!$updated)
-            throw new \Exception('Failed to update');
-
+        throw_if(!$updated, GeneralJsonException::class, 'Failed to update');
         return $updated;
     }
 
     public function delete($comment)
     {
         $deleted = $comment->forceDelete();
-        if (!$deleted)
-            throw new \Exception('Could not delete comment');
-
+        throw_if(!$deleted, GeneralJsonException::class, 'Failed to delete');
         return $deleted;
     }
 }
