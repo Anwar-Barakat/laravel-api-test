@@ -60,4 +60,5 @@ class UserController extends Controller
             'data' => 'User deleted successfully'
         ]);
     }
+
 }
