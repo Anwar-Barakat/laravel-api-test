@@ -7,7 +7,7 @@ use RecursiveIteratorIterator;
 
 class RouteHelper
 {
-    public static function includeRouteFiles(string $folder)
+    public static function includeRouteFiles(string $folder): void
     {
         // iterate thru the v1 folder recursively
         $dirIterator    = new RecursiveDirectoryIterator($folder);
