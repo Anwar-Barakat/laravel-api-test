@@ -18,7 +18,7 @@ class UserRepository extends BaseRepository
             'email'     => data_get($attributes, 'email'),
             'password'  => Hash::make(data_get($attributes, 'password'))
         ]);
-        throw_if(!$created, GeneralJsonException::class, 'Failed to create');
+        throw_if(!$created, GeneralJsonException::class, 'failed to create user');
         event(new UserCreatedEvent($created));
         return $created;
     }
@@ -26,7 +26,7 @@ class UserRepository extends BaseRepository
     public function update($user, array $attributes)
     {
         $updated = $user->update(['name' => data_get($attributes, 'name')]);
-        throw_if(!$updated, GeneralJsonException::class, 'Failed to update');
+        throw_if(!$updated, GeneralJsonException::class, 'failed to update user');
         event(new UserUpdatedEvent($user));
         return $updated;
     }
@@ -34,7 +34,7 @@ class UserRepository extends BaseRepository
     public function delete($user)
     {
         $deleted = $user->forceDelete();
-        throw_if(!$deleted, GeneralJsonException::class, 'Failed to delete');
+        throw_if(!$deleted, GeneralJsonException::class, 'failed to delete user');
         event(new UserDeletedEvent($user));
         return $deleted;
     }
