@@ -11,13 +11,18 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $pageSize   = $request->page_size ?? 20;
-        $products   = Product::query()->paginate($pageSize);
+        $pageSize = $request->page_size ?? 20;
+        $products = Product::query()->paginate($pageSize);
         return ProductResource::collection($products);
     }
 
@@ -26,7 +31,7 @@ class ProductController extends Controller
      */
     public function store(Request $request, ProductRepository $repository)
     {
-        $created= $repository->create($request->only(['name','body','price']));
+        $created = $repository->create($request->only(['name', 'body', 'price']));
         return new ProductResource($created);
     }
 
@@ -43,7 +48,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product, ProductRepository $repository)
     {
-        $product = $repository->update($product, $request->only(['name','body','price']));
+        $product = $repository->update($product, $request->only(['name', 'body', 'price']));
         return new ProductResource($product);
     }
 
