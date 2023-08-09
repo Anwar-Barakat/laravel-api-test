@@ -44,7 +44,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product, ProductRepository $repository)
     {
         $product = $repository->update($product, $request->only(['name','body','price']));
-        return $product;
+        return new ProductResource($product);
     }
 
     /**
