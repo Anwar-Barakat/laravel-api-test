@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class JWTController extends Controller
+class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:admin', ['except' => ['login', 'register']]);
     }
 
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:users,email', 'max:255'],
+            'email' => ['required', 'email', 'unique:admins,email', 'max:255'],
             'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
             'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
         ]);
@@ -30,17 +29,17 @@ class JWTController extends Controller
         if ($validator->fails())
             return new JsonResponse($validator->errors()->toJson(), 422);
 
-        $user = User::create([
+        $admin = Admin::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $token = Auth::login($user);
+        $token = Auth::guard('admin')->login($admin);
 
         return new JsonResponse([
             'status' => 'success',
-            'message' => 'User created successfully',
-            'user' => $user,
+            'message' => 'Admin created successfully',
+            'admin' => $admin,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -58,17 +57,17 @@ class JWTController extends Controller
             return new JsonResponse($validator->errors()->toJson(), 422);
 
         $credentials = $request->only('email', 'password');
-        $token = Auth::attempt($credentials);
+        $token = Auth::guard('admin')->attempt($credentials);
         if (!$token)
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
 
-        $user = Auth::user();
+        $admin = Auth::user();
         return response()->json([
             'status' => 'success',
-            'user' => $user,
+            'admin' => $admin,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -78,18 +77,17 @@ class JWTController extends Controller
 
     public function profile()
     {
-        if (!Auth::check()) {
+        if (!Auth::guard('admin')->check())
             return new JsonResponse([
                 'message' => 'Unauthorized',
             ]);
-        }
 
-        return new UserResource(Auth::guard('api')->user());
+        return Auth::guard('admin')->user();
     }
 
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         return new JsonResponse([
             'status' => 'success',
             'message' => 'Successfully logged out',
@@ -100,9 +98,9 @@ class JWTController extends Controller
     {
         return new JsonResponse([
             'status' => 'success',
-            'user' => Auth::user(),
+            'admin' => Auth::guard('admin')->user(),
             'authorisation' => [
-                'token' => Auth::refresh(),
+                'token' => Auth::guard('admin')->refresh(),
                 'type' => 'bearer',
             ]
         ]);

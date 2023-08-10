@@ -22,3 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     RouteHelper::includeRouteFiles(__DIR__ . '/api/v1');
 });
+
+Route::prefix('v2')->group(function () {
+    RouteHelper::includeRouteFiles(__DIR__ . '/api/v2');
+});
