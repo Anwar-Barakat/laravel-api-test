@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
+use App\Models\Worker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,14 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
+        $workerId = Worker::inRandomOrder()->first()->id;
+        $clientId = Client::inRandomOrder()->first()->id;
+
         return [
-            //
+            'client_id' => $clientId,
+            'worker_id' => $workerId,
+            'phone' => fake()->phoneNumber(),
+            'location' => fake()->address(),
         ];
     }
 }
