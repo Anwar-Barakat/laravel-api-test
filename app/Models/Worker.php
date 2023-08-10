@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class Worker extends Model
+class Worker extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
@@ -15,6 +16,17 @@ class Worker extends Model
         'password',
         'phone',
         'location',
-        'status'
+        'status',
+        'photo'
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
+    }
 }

@@ -1,45 +1,53 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api\Worker;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
+use App\Models\Worker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AdminController extends Controller
+class WorkerAuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin', ['except' => ['login', 'register']]);
+        $this->middleware('auth:worker', ['except' => ['login', 'register']]);
     }
+
 
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:admins,email', 'max:255'],
+            'email' => ['required', 'email', 'unique:workers,email', 'max:255'],
             'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
             'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
+            'phone' => ['required', 'numeric', 'digits:10'],
+            'location' => ['required', 'min:10', 'max:255', 'string'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif'],
         ]);
 
         if ($validator->fails())
             return new JsonResponse($validator->errors()->toJson(), 422);
 
-        $admin = Admin::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-        $token = Auth::guard('admin')->login($admin);
+        $worker = Worker::create(array_merge((array)$validator->validated(), ['password' => Hash::make($request->password),]));
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filePath = $file->store('workers');
+            $worker->photo = $filePath;
+            $worker->save();
+        }
+
+        $token = Auth::guard('worker')->login($worker);
 
         return new JsonResponse([
             'status' => 'success',
-            'message' => 'Admin created successfully',
-            'admin' => $admin,
+            'message' => 'Worker created successfully',
+            'worker' => $worker,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -57,17 +65,17 @@ class AdminController extends Controller
             return new JsonResponse($validator->errors()->toJson(), 422);
 
         $credentials = $request->only('email', 'password');
-        $token = Auth::guard('admin')->attempt($credentials);
+        $token = Auth::guard('worker')->attempt($credentials);
         if (!$token)
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
 
-        $admin = Auth::user();
+        $worker = Auth::guard('worker')->user();
         return response()->json([
             'status' => 'success',
-            'admin' => $admin,
+            'worker' => $worker,
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -77,17 +85,17 @@ class AdminController extends Controller
 
     public function profile()
     {
-        if (!Auth::guard('admin')->check())
+        if (!Auth::guard('worker')->check())
             return new JsonResponse([
                 'message' => 'Unauthorized',
             ]);
 
-        return Auth::guard('admin')->user();
+        return Auth::guard('worker')->user();
     }
 
     public function logout()
     {
-        Auth::guard('admin')->logout();
+        Auth::guard('worker')->logout();
         return new JsonResponse([
             'status' => 'success',
             'message' => 'Successfully logged out',
@@ -98,9 +106,9 @@ class AdminController extends Controller
     {
         return new JsonResponse([
             'status' => 'success',
-            'admin' => Auth::guard('admin')->user(),
+            'worker' => Auth::guard('worker')->user(),
             'authorisation' => [
-                'token' => Auth::guard('admin')->refresh(),
+                'token' => Auth::guard('worker')->refresh(),
                 'type' => 'bearer',
             ]
         ]);
