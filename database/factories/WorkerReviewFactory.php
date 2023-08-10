@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
+use App\Models\Worker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,14 @@ class WorkerReviewFactory extends Factory
      */
     public function definition(): array
     {
+        $workerId = Worker::inRandomOrder()->first()->id;
+        $clientId = Client::inRandomOrder()->first()->id;
+
         return [
-            //
+            'worker_id' => $workerId,
+            'client_id' => $clientId,
+            'comment' => fake()->sentence(150),
+            'rate' => fake()->numberBetween(1, 10),
         ];
     }
 }

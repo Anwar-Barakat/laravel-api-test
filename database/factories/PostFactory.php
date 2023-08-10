@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Worker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,9 +17,11 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $worker_id = Worker::inRandomOrder()->first()->id;
         return [
-            'title'     => fake()->word(),
-            'body'      => []
+            'title' => fake()->word(),
+            'body' => [],
+            'worker_id' => $worker_id
         ];
     }
 

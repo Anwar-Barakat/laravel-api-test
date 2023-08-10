@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('worker_reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constraint()->cascadeOnUpdate();
             $table->foreignId('worker_id')->constraint()->cascadeOnUpdate();
+            $table->foreignId('client_id')->constraint()->cascadeOnUpdate();
             $table->text('comment');
             $table->integer('rate');
             $table->timestamps();

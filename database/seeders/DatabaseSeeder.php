@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
             WorkerSeeder::class,
             ClientSeeder::class,
             OrderSeeder::class,
-
-//            PostSeeder::class,
-//            CommentSeeder::class,
+            WorkerReviewSeeder::class,
             ProductSeeder::class,
 
+            PostSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }

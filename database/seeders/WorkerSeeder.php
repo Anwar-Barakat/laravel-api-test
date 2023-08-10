@@ -18,7 +18,7 @@ class WorkerSeeder extends Seeder
     {
         $this->disableForiegnKeys();
         $this->truncate('workers');
-        Worker::factory(20)->create();
+        Worker::factory(10)->create();
         $this->enableForiegnKeys();
     }
 }

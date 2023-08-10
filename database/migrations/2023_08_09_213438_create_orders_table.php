@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constraint()->cascadeOnUpdate();
             $table->foreignId('worker_id')->constraint()->cascadeOnUpdate();
+            $table->foreignId('client_id')->constraint()->cascadeOnUpdate();
             $table->string('phone');
             $table->string('location');
             $table->boolean('status')->default(1);

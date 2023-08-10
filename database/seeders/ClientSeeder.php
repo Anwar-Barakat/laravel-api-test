@@ -17,7 +17,7 @@ class ClientSeeder extends Seeder
     public function run(): void
     {
         $this->disableForiegnKeys();
-        $this->truncate('workers');
+        $this->truncate('clients');
         Client::factory(20)->create();
         $this->enableForiegnKeys();
     }

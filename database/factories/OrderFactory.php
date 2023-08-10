@@ -22,8 +22,8 @@ class OrderFactory extends Factory
         $clientId = Client::inRandomOrder()->first()->id;
 
         return [
-            'client_id' => $clientId,
             'worker_id' => $workerId,
+            'client_id' => $clientId,
             'phone' => fake()->phoneNumber(),
             'location' => fake()->address(),
         ];

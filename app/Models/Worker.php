@@ -15,5 +15,6 @@ class Worker extends Model
         'password',
         'phone',
         'location',
+        'status'
     ];
 }
