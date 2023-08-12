@@ -52,6 +52,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'workers',
         ],
+        'client' => [
+            'driver' => 'jwt',
+            'provider' => 'clients',
+        ],
     ],
 
     /*
@@ -83,6 +87,10 @@ return [
         'workers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Worker::class,
+        ],
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Client::class,
         ],
     ],
 
