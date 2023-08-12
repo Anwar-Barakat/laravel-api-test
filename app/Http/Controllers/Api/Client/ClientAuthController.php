@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\LoginClientRequest;
+use App\Http\Requests\Client\RegisterClientRequest;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class ClientAuthController extends Controller
 {
@@ -17,21 +17,10 @@ class ClientAuthController extends Controller
         $this->middleware('auth:client', ['except' => ['login', 'register']]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterClientRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:clients,email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
-            'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
-            'phone' => ['required', 'numeric', 'digits:10'],
-        ]);
-
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
-        $client = Client::create(array_merge((array)$validator->validated(), ['password' => Hash::make($request->password),]));
-
+        $validation = $request->only(['name', 'email', 'phone']);
+        $client = Client::create(array_merge((array)$validation, ['password' => Hash::make($request->password),]));
         $token = Auth::guard('client')->login($client);
 
         return new JsonResponse([
@@ -45,15 +34,8 @@ class ClientAuthController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginClientRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
         $credentials = $request->only('email', 'password');
         $token = Auth::guard('client')->attempt($credentials);
         if (!$token)

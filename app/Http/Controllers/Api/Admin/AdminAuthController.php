@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\LoginAdminRequest;
+use App\Http\Requests\Admin\RegisterAdminRequest;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AdminAuthController extends Controller
 {
@@ -17,19 +17,10 @@ class AdminAuthController extends Controller
         $this->middleware('auth:admin', ['except' => ['login', 'register']]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterAdminRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:admins,email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
-            'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
-        ]);
-
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
-        $admin = Admin::create(array_merge($validator->validated(), ['password' => Hash::make($request->password)]));
+        $validation = $request->only(['name', 'email', 'password',]);
+        $admin = Admin::create(array_merge($validation, ['password' => Hash::make($request->password)]));
         $token = Auth::guard('admin')->login($admin);
 
         return new JsonResponse([
@@ -43,15 +34,8 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginAdminRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
         $credentials = $request->only('email', 'password');
         $token = Auth::guard('admin')->attempt($credentials);
         if (!$token)

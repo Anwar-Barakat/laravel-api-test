@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\LoginUserRequest;
+use App\Http\Requests\User\RegisterUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class JWTController extends Controller
 {
@@ -18,24 +18,11 @@ class JWTController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:users,email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
-            'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
-        ]);
-
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-        $token = Auth::login($user);
+        $validation = $request->only(['name', 'email', 'password',]);
+        $user = User::create(array_merge($validation, ['password' => Hash::make($request->password)]));
+        $token = Auth::guard('api')->login($user);
 
         return new JsonResponse([
             'status' => 'success',
@@ -48,15 +35,8 @@ class JWTController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginUserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
         $credentials = $request->only('email', 'password');
         $token = Auth::attempt($credentials);
         if (!$token)
@@ -65,7 +45,7 @@ class JWTController extends Controller
                 'message' => 'Unauthorized',
             ], 401);
 
-        $user = Auth::user();
+        $user = Auth::guard('api')->user();
         return response()->json([
             'status' => 'success',
             'user' => $user,

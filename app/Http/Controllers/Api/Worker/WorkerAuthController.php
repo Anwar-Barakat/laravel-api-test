@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\Worker;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Worker\LoginWorkerRequest;
+use App\Http\Requests\Worker\RegisterWorkerRequest;
 use App\Models\Worker;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class WorkerAuthController extends Controller
 {
@@ -18,22 +18,10 @@ class WorkerAuthController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function register(RegisterWorkerRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'min:3', 'max:50', 'string'],
-            'email' => ['required', 'email', 'unique:workers,email', 'max:255'],
-            'password' => ['required', 'min:8', 'max:25', 'string', 'confirmed'],
-            'password_confirmation' => ['required', 'min:8', 'max:55', 'string', 'same:password'],
-            'phone' => ['required', 'numeric', 'digits:10'],
-            'location' => ['required', 'min:10', 'max:255', 'string'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif'],
-        ]);
-
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
-        $worker = Worker::create(array_merge((array)$validator->validated(), ['password' => Hash::make($request->password),]));
+        $validation = $request->only(['name', 'email', 'password', 'phone', 'location', 'photo',]);
+        $worker = Worker::create(array_merge((array)$validation, ['password' => Hash::make($request->password),]));
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
@@ -55,17 +43,12 @@ class WorkerAuthController extends Controller
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginWorkerRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails())
-            return new JsonResponse($validator->errors()->toJson(), 422);
-
         $credentials = $request->only('email', 'password');
         $token = Auth::guard('worker')->attempt($credentials);
+
+
         if (!$token)
             return new JsonResponse([
                 'status' => 'error',
