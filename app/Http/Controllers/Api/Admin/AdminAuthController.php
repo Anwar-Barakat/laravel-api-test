@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginAdminRequest;
 use App\Http\Requests\Admin\RegisterAdminRequest;
+use App\Http\Resources\AdminResource;
 use App\Models\Admin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class AdminAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'message' => 'Admin created successfully',
-            'admin' => $admin,
+            'admin' => new AdminResource($admin),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -47,7 +48,7 @@ class AdminAuthController extends Controller
         $admin = Auth::guard('admin')->user();
         return response()->json([
             'status' => 'success',
-            'admin' => $admin,
+            'admin' => new AdminResource($admin),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -62,7 +63,7 @@ class AdminAuthController extends Controller
                 'message' => 'Unauthorized',
             ]);
 
-        return Auth::guard('admin')->user();
+        return new AdminResource(Auth::guard('admin')->user());
     }
 
     public function logout()

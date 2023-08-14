@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\LoginClientRequest;
 use App\Http\Requests\Client\RegisterClientRequest;
+use App\Http\Resources\ClientResource;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class ClientAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'message' => 'Client created successfully',
-            'client' => $client,
+            'client' => new ClientResource($client),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -47,7 +48,7 @@ class ClientAuthController extends Controller
         $client = Auth::guard('client')->user();
         return response()->json([
             'status' => 'success',
-            'client' => $client,
+            'client' => new ClientResource($client),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -62,7 +63,7 @@ class ClientAuthController extends Controller
                 'message' => 'Unauthorized',
             ]);
 
-        return Auth::guard('client')->user();
+        return new ClientResource(Auth::guard('client')->user());
     }
 
     public function logout()

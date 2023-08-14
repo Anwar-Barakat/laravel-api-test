@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Worker;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Worker\LoginWorkerRequest;
 use App\Http\Requests\Worker\RegisterWorkerRequest;
+use App\Http\Resources\WorkerResource;
 use App\Models\Worker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +36,7 @@ class WorkerAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'message' => 'Worker created successfully',
-            'worker' => $worker,
+            'worker' => new WorkerResource($worker),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -58,7 +59,7 @@ class WorkerAuthController extends Controller
         $worker = Auth::guard('worker')->user();
         return response()->json([
             'status' => 'success',
-            'worker' => $worker,
+            'worker' => new WorkerResource($worker),
             'authorisation' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -73,7 +74,7 @@ class WorkerAuthController extends Controller
                 'message' => 'Unauthorized',
             ]);
 
-        return Auth::guard('worker')->user();
+        return new WorkerResource(Auth::guard('worker')->user());
     }
 
     public function logout()
