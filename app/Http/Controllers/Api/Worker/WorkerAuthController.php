@@ -37,7 +37,7 @@ class WorkerAuthController extends Controller
             'status' => 'success',
             'message' => 'Worker created successfully',
             'worker' => new WorkerResource($worker),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -60,7 +60,7 @@ class WorkerAuthController extends Controller
         return response()->json([
             'status' => 'success',
             'worker' => new WorkerResource($worker),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -91,7 +91,7 @@ class WorkerAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'worker' => Auth::guard('worker')->user(),
-            'authorisation' => [
+            'authorization' => [
                 'token' => Auth::guard('worker')->refresh(),
                 'type' => 'bearer',
             ]

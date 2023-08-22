@@ -28,7 +28,7 @@ class ClientAuthController extends Controller
             'status' => 'success',
             'message' => 'Client created successfully',
             'client' => new ClientResource($client),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -49,7 +49,7 @@ class ClientAuthController extends Controller
         return response()->json([
             'status' => 'success',
             'client' => new ClientResource($client),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -80,7 +80,7 @@ class ClientAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'client' => Auth::guard('client')->user(),
-            'authorisation' => [
+            'authorization' => [
                 'token' => Auth::guard('client')->refresh(),
                 'type' => 'bearer',
             ]

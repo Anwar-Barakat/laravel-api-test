@@ -17,7 +17,7 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
-        $worker_id = Worker::inRandomOrder()->first()->id;
+        $worker_id  = Worker::inRandomOrder()->first()->id;
         return [
             'title' => fake()->word(),
             'body' => [],

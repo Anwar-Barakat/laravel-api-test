@@ -14,19 +14,20 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
+        'worker_id',
     ];
 
     protected $casts = ['body' => 'array'];
 
-    public function getTitleAttribute(): string
-    {
-        return strtoupper($this->attributes['title']);
-    }
+    // public function getTitleAttribute(): string
+    // {
+    //     return strtoupper($this->attributes['title']);
+    // }
 
-    public function setTitleAttribute($value): void
-    {
-        $this->attributes['title'] = strtolower($value);
-    }
+    // public function setTitleAttribute($value): void
+    // {
+    //     $this->attributes['title'] = strtolower($value);
+    // }
 
     public function comments(): HasMany
     {

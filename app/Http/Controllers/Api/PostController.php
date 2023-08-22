@@ -27,7 +27,7 @@ class PostController extends Controller
     public function store(Request $request, PostRepository $repository)
     {
         $created = $repository->create($request->only([
-            'title', 'body', 'user_ids'
+            'title', 'body', 'user_ids', 'worker_id'
         ]));
         return new PostResource($created);
     }
@@ -46,7 +46,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post, PostRepository $repository)
     {
         $post = $repository->update($post, $request->only([
-            'title', 'body', 'user_ids'
+            'title', 'body', 'user_ids', 'worker_id'
         ]));
         return new PostResource($post);
     }

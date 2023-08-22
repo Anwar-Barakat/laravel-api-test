@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\GeneralJsonException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginAdminRequest;
 use App\Http\Requests\Admin\RegisterAdminRequest;
@@ -28,7 +29,7 @@ class AdminAuthController extends Controller
             'status' => 'success',
             'message' => 'Admin created successfully',
             'admin' => new AdminResource($admin),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -39,17 +40,13 @@ class AdminAuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         $token = Auth::guard('admin')->attempt($credentials);
-        if (!$token)
-            return new JsonResponse([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+        throw_if(GeneralJsonException::class, 'Unauthorized', 401);
 
         $admin = Auth::guard('admin')->user();
         return response()->json([
             'status' => 'success',
             'admin' => new AdminResource($admin),
-            'authorisation' => [
+            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
             ]
@@ -80,7 +77,7 @@ class AdminAuthController extends Controller
         return new JsonResponse([
             'status' => 'success',
             'admin' => Auth::guard('admin')->user(),
-            'authorisation' => [
+            'authorization' => [
                 'token' => Auth::guard('admin')->refresh(),
                 'type' => 'bearer',
             ]

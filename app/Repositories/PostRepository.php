@@ -12,8 +12,9 @@ class PostRepository extends BaseRepository
     {
         return DB::transaction(function () use ($attributes) {
             $created = Post::query()->create([
-                'title' => data_get($attributes, 'title', 'untitled'),
-                'body'  => data_get($attributes, 'body',)
+                'title'         => data_get($attributes, 'title', 'untitled'),
+                'body'          => data_get($attributes, 'body'),
+                'worker_id'     => data_get($attributes, 'worker_id'),
             ]);
 
             throw_if(!$created, GeneralJsonException::class, 'Failed to create');
@@ -29,8 +30,10 @@ class PostRepository extends BaseRepository
     {
         return DB::transaction(function () use ($post, $attributes) {
             $updated =  $post->update([
-                'title' => data_get($attributes, 'title', $post->title),
-                'body'  => data_get($attributes, 'body', $post->body),
+                'title'         => data_get($attributes, 'title', $post->title),
+                'body'          => data_get($attributes, 'body', $post->body),
+                'worker_id'     => data_get($attributes, 'worker_id'),
+
             ]);
 
             throw_if(!$updated, GeneralJsonException::class, 'Failed to update');

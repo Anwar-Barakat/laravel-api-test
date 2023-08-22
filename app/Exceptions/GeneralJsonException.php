@@ -9,9 +9,9 @@ class GeneralJsonException extends Exception
 {
     protected $code = 422;
 
-    // public function report()
-    // {
-    // }
+    public function report()
+    {
+    }
 
     public function render($request)
     {
