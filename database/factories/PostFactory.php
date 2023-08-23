@@ -19,16 +19,16 @@ class PostFactory extends Factory
     {
         $worker_id  = Worker::inRandomOrder()->first()->id;
         return [
-            'title' => fake()->word(),
-            'body' => [],
+            'title'     => fake()->word(),
+            'body'      => [],
             'worker_id' => $worker_id
         ];
     }
 
-    public function untitled()
-    {
-        return $this->state([
-            'title' => 'untitled'
-        ]);
-    }
+    // public function untitled()
+    // {
+    //     return $this->state([
+    //         'title' => 'untitled'
+    //     ]);
+    // }
 }
