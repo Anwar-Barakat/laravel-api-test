@@ -10,10 +10,20 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * @group User Management
+ *
+ * APIs to manage the user resource.
+ **/
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of users.
+     *
+     * Get a list of users.
+     *
+     * @queryParam page_size int Size per page. Defaults to 20. Example: 20
+     * @queryParam page int Page to view. Example: 1
      */
     public function index(Request $request)
     {
@@ -60,5 +70,4 @@ class UserController extends Controller
             'data' => 'User deleted successfully'
         ]);
     }
-
 }
