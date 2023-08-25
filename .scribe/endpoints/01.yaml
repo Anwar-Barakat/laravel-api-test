@@ -47,14 +47,9 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":[{"id":1,"name":"Dr. Kirsten Greenholt","email":"mraz.beverly@example.org","created_at":"2023-08-22"},{"id":2,"name":"Marlon Hermann","email":"verner27@example.org","created_at":"2023-08-22"},{"id":3,"name":"Else Pouros III","email":"ashton65@example.com","created_at":"2023-08-22"},{"id":4,"name":"Cali Ernser","email":"marlee.purdy@example.org","created_at":"2023-08-22"},{"id":5,"name":"Mr. Oswaldo Hansen","email":"hassan.hoeger@example.org","created_at":"2023-08-22"},{"id":6,"name":"Miss Vicenta Kessler Sr.","email":"jacobs.antonietta@example.net","created_at":"2023-08-22"},{"id":7,"name":"Ruth Zieme","email":"autumn76@example.net","created_at":"2023-08-22"},{"id":8,"name":"Gregory Paucek","email":"sallie.walsh@example.org","created_at":"2023-08-22"},{"id":9,"name":"Walter Schowalter III","email":"everette72@example.org","created_at":"2023-08-22"},{"id":10,"name":"Fatima Hyatt","email":"zkovacek@example.net","created_at":"2023-08-22"}],"links":{"first":"http:\/\/localhost\/api\/v1\/users?page=1","last":"http:\/\/localhost\/api\/v1\/users?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"http:\/\/localhost\/api\/v1\/users?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"http:\/\/localhost\/api\/v1\/users","per_page":20,"to":10,"total":10}}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '49'
-          access-control-allow-origin: '*'
-        description: null
+        content: '{"data":[{"id":19,"name":"Osborne Mohr","email":"rferry@example.net","created_at":"2023-08-25"},{"id":20,"name":"Madalyn Wyman","email":"zskiles@example.net","created_at":"2023-08-25"}]}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -84,10 +79,32 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Name of the user. Example : John Doe'
+        required: true
+        example: nam
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'Email of the user. Example : john@example.com'
+        required: true
+        example: vaufderhar@example.org
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: nam
+      email: vaufderhar@example.org
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"data":[{"id":21,"name":"Aisha Gerhold","email":"lauriane.connelly@example.net","created_at":"2023-08-25"},{"id":22,"name":"Jayne Pouros","email":"florian.skiles@example.org","created_at":"2023-08-25"}]}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -105,7 +122,7 @@ endpoints:
         APIs to manage the user resource.
       subgroup: ''
       subgroupDescription: ''
-      title: 'Display the specified resource.'
+      title: 'Display the specified user.'
       description: ''
       authenticated: false
       custom: []
@@ -120,8 +137,16 @@ endpoints:
         example: 1
         type: integer
         custom: []
+      id:
+        name: id
+        description: 'User ID'
+        required: true
+        example: 8
+        type: integer
+        custom: []
     cleanUrlParameters:
       user_id: 1
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -130,14 +155,9 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":{"id":1,"name":"Dr. Kirsten Greenholt","email":"mraz.beverly@example.org","created_at":"2023-08-22"}}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '48'
-          access-control-allow-origin: '*'
-        description: null
+        content: '{"data":[{"id":23,"name":"Johann Okuneva","email":"kilback.dexter@example.net","created_at":"2023-08-25"},{"id":24,"name":"Nicolette Swaniawski","email":"alaina.kozey@example.net","created_at":"2023-08-25"}]}'
+        headers: []
+        description: ''
         custom: []
     responseFields: []
     auth: []
@@ -175,10 +195,24 @@ endpoints:
       user_id: 1
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Name of the user. Example : John Doe'
+        required: false
+        example: temporibus
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: temporibus
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: '{"data":[{"id":25,"name":"Walter Runte","email":"gkuphal@example.com","created_at":"2023-08-25"},{"id":26,"name":"Zachariah Koss","email":"zella25@example.com","created_at":"2023-08-25"}]}'
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -218,7 +252,16 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data" : "success"
+          }
+        headers: []
+        description: ''
+        custom: []
     responseFields: []
     auth: []
     controller: null
