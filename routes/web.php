@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
+use App\Mail\VerificationEmail;
 use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\RoutePath;
 
@@ -29,6 +32,8 @@ Route::get(RoutePath::for('password.reset', '/reset-password/{token}'), function
 
 if (App::environment('local')) {
     Route::get('/playground', function () {
-        return (new WelcomeMail(User::factory()->make()))->render();
     });
 }
+
+
+Route::get('send', [UserController::class, 'send']);

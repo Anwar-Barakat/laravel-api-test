@@ -31,6 +31,7 @@ class PostController extends Controller
         $created = $repository->create($request->only([
             'title', 'body', 'user_ids', 'worker_id'
         ]));
+        
         return new PostResource($created);
     }
 

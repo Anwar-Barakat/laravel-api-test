@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AdminAuthController;
+use App\Http\Controllers\Api\Admin\AdminNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin'], function () {
@@ -11,5 +12,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
         Route::get('profile', 'profile');
+    });
+
+    Route::controller(AdminNotificationController::class)->prefix('notifications')->group(function () {
+        Route::get('/', 'index');
     });
 });

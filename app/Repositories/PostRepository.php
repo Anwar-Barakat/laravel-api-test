@@ -3,8 +3,11 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralJsonException;
+use App\Models\Admin;
 use App\Models\Post;
+use App\Notifications\AddedPostNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class PostRepository extends BaseRepository
 {
@@ -21,6 +24,8 @@ class PostRepository extends BaseRepository
 
             if ($user_ids = data_get($attributes, 'user_ids'))
                 $created->users()->sync($user_ids);
+
+            $this->sendAdminNotification($created);
 
             return $created;
         });
@@ -52,5 +57,11 @@ class PostRepository extends BaseRepository
             throw_if(!$deleted, GeneralJsonException::class, 'Can not delete post');
             return $deleted;
         });
+    }
+
+    public function sendAdminNotification($post)
+    {
+        $admins = Admin::get();
+        Notification::send($admins, new AddedPostNotification(auth()->guard('worker')->user(), $post));
     }
 }

@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Mail;
 
 /**
  * @group User Management
@@ -88,5 +88,12 @@ class UserController extends Controller
         return new JsonResponse([
             'data' => 'User deleted successfully'
         ]);
+    }
+
+    public function send()
+    {
+        $user = User::factory()->create();
+        dd($user);
+        Mail::to();
     }
 }

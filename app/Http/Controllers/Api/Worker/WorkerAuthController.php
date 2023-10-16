@@ -18,7 +18,6 @@ class WorkerAuthController extends Controller
         $this->middleware('auth:worker', ['except' => ['login', 'register']]);
     }
 
-
     public function register(RegisterWorkerRequest $request)
     {
         $validation = $request->only(['name', 'email', 'password', 'phone', 'location', 'photo',]);
