@@ -7,14 +7,19 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'admin'], function () {
 
     Route::controller(AdminAuthController::class)->group(function () {
-        Route::post('login', 'login');
-        Route::post('register', 'register');
-        Route::post('logout', 'logout');
-        Route::post('refresh', 'refresh');
-        Route::get('profile', 'profile');
+        Route::post('login',        'login');
+        Route::post('register',     'register');
+        Route::post('logout',       'logout');
+        Route::post('refresh',      'refresh');
+        Route::get('profile',       'profile');
     });
 
-    Route::controller(AdminNotificationController::class)->prefix('notifications')->group(function () {
-        Route::get('/', 'index');
+    Route::controller(AdminNotificationController::class)->middleware(['auth:admin'])->prefix('notifications')->group(function () {
+        Route::get('/',                 'index');
+        Route::get('/unread',           'unread');
+        Route::post('/markRead',        'markRead');
+
+        Route::delete('/',          'delete');
+        Route::delete('/deleteAll',     'deleteAll');
     });
 });

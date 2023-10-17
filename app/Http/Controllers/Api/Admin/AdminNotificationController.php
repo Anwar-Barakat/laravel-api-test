@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use DB;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class AdminNotificationController extends Controller
@@ -14,57 +17,45 @@ class AdminNotificationController extends Controller
      */
     public function index()
     {
-        $admin = Admin::findOrFail(auth()->id);
-        return Response::json([
+        $admin = Admin::findOrFail(auth()->guard('admin')->user()->id);
+        return new JsonResponse([
             'notifications' => $admin->notifications
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function unread()
     {
-        //
+        $admin = Admin::findOrFail(auth()->guard('admin')->user()->id);
+        return new JsonResponse([
+            'notifications' => $admin->unreadNotifications
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function markRead()
     {
-        //
+        $admin = Admin::findOrFail(auth()->guard('admin')->user()->id);
+        $admin->unreadNotifications()->update(['read_at' => now()]);
+
+        return new JsonResponse([
+            'message' => 'Read notifications'
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Admin $admin)
+    public function delete(Request $request)
     {
-        //
+        DB::table('notifications')->where('id', $request->id)->delete();
+        return new JsonResponse([
+            'message' => 'Notification deleted',
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Admin $admin)
+    public function deleteAll()
     {
-        //
-    }
+        $admin = Admin::findOrFail(auth()->guard('admin')->user()->id);
+        $admin->notifications()->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Admin $admin)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Admin $admin)
-    {
-        //
+        return new JsonResponse([
+            'message' => 'Notifications Have Deleted Successfully'
+        ]);
     }
 }
